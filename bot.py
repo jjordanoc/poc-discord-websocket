@@ -1,24 +1,20 @@
 import asyncio
+import os
 from asyncio import Task
-from typing import Union
+from typing import Optional
 
 import discord
 import websockets
 from discord.ext import commands
+from dotenv import load_dotenv
 
-CHANNEL_ID = 1094347509238857828
-BOT_TOKEN = "MTA5MzcwMjY2ODg3NjI1OTQxOQ.G0uhqh.zlJWzddo-7qS6DB1PrxdkOIr2MbzlfR5U2mhLE"
+load_dotenv()
+CHANNEL_ID: int = int(os.getenv("CHANNEL_ID"))
+BOT_TOKEN: str = os.getenv("TOKEN")
 
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 loop = asyncio.get_event_loop()
-websocket_server_task: Union[Task, None] = None
-
-
-@client.event
-async def on_ready():
-    print("Hello! Study bot is ready!")
-    channel = client.get_channel(CHANNEL_ID)
-    await channel.send("Hello, send data bot is ready!")
+websocket_server_task: Optional[Task] = None
 
 
 @client.command()
@@ -60,7 +56,7 @@ async def start_server():
 @client.event
 async def on_ready():
     print("Logged in as", client.user)
-
+    await send_to_discord("Bot started")
 
 if __name__ == "__main__":
     websocket_server_task = None
